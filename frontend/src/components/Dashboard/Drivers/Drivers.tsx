@@ -100,17 +100,17 @@ export const Drivers: React.FC<Props> = ({ drivers }) => {
               Gas Prices
             </p>
             <p className="drivers__infoPanel__textContainer__textBox__secondaryText">
-              High cost pressure
+              Gas output impact
             </p>
           </div>
         </div>
 
         <div className="drivers__infoPanel__infoBox">
           <div className="drivers__infoPanel__infoBox__unitsBox">
-            <p className="drivers__infoPanel__infoBox__unitsBox__text">+8%</p>
+            <p className="drivers__infoPanel__infoBox__unitsBox__text">+0%</p>
           </div>
 
-          <p className="drivers__infoPanel__infoBox__changeText red">+5€</p>
+          <p className="drivers__infoPanel__infoBox__changeText green">+0€</p>
         </div>
       </div>
     </div>

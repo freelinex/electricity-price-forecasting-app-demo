@@ -46,6 +46,7 @@ export const Header = () => {
             alt=""
             className="header__buttonBox__button__img"
           />
+          Back
         </Link>
       </div>
     </header>

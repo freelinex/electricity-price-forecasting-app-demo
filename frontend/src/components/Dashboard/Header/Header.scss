@@ -80,13 +80,17 @@
       display: flex;
       align-items: center;
       justify-content: center;
+      gap: 4px;
 
       height: 32px;
-      width: 32px;
+      width: 64px;
       background-color: $mainBorderColor;
       border-radius: $borderRadius;
 
-      box-sizing: border-box;
+      text-decoration: none;
+      color: inherit;
+      font-size: 13px;
+      font-weight: 400;
 
       &__img {
         background-color: transparent;

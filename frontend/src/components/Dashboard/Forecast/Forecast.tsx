@@ -284,7 +284,11 @@ export const Forecast: React.FC<Props> = ({
         ) : hasError ? (
           <div className="errorBox" role="alert">
             <p className="errorBox__text">Unable to load forecast</p>
-            <button className="errorBox__button" type="button" onClick={onRetry}>
+            <button
+              className="errorBox__button"
+              type="button"
+              onClick={onRetry}
+            >
               Retry
             </button>
           </div>
@@ -376,29 +380,6 @@ export const Forecast: React.FC<Props> = ({
 
               <Area
                 type="linear"
-                dataKey="rangeBase"
-                stackId="range"
-                stroke="none"
-                fill="transparent"
-                activeDot={false}
-                legendType="none"
-                isAnimationActive={false}
-              />
-
-              <Area
-                type="linear"
-                dataKey="rangeDiff"
-                stackId="range"
-                stroke="none"
-                activeDot={false}
-                fill="#f0f0f8"
-                fillOpacity={0.9}
-                name="Prices range"
-                isAnimationActive={false}
-              />
-
-              <Area
-                type="linear"
                 dataKey="actual"
                 baseValue={0}
                 stroke="none"
@@ -483,6 +464,8 @@ export const Forecast: React.FC<Props> = ({
                 height={44}
                 iconType="plainline"
                 wrapperStyle={{
+                  display: "flex",
+                  justifyContent: "center",
                   fontSize: "12px",
                   color: "#777780",
                   paddingTop: "16px",

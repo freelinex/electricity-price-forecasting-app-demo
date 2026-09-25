@@ -1,10 +1,10 @@
 import type { DriversData, ForecastData, HighlightsData } from "../types/types";
 
-const BASE_URL = "";
+const BASE_URL = "/api";
 
-const DRIVERS = "/api/dashboard/drivers";
-const HIGHLIGHTS = "/api/dashboard/highlights";
-const FORECAST = "/forecast";
+const DRIVERS = "/drivers.json";
+const HIGHLIGHTS = "/highlights.json";
+const FORECAST = "/forecast.json";
 
 export type ForecastPeriod = "24h" | "1w" | "1m";
 

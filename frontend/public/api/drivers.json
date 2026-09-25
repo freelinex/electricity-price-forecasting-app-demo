@@ -4,28 +4,28 @@
     {
       "name": "Wind Generation",
       "description": "Wind output impact",
-      "previous_value": 1029.9,
-      "current_value": 2228,
+      "previous_value": 1686.8,
+      "current_value": 1845.8,
       "unit": "MW",
-      "change_text": "+116.3%",
+      "change_text": "+9.4%",
       "trend": "down"
     },
     {
       "name": "Solar Generation",
       "description": "Solar output impact",
-      "previous_value": 3622.3,
-      "current_value": 3171.6,
+      "previous_value": 1871.1,
+      "current_value": 1793.3,
       "unit": "MW",
-      "change_text": "-12.4%",
+      "change_text": "-4.2%",
       "trend": "up"
     },
     {
       "name": "Electricity Demand",
       "description": "Grid load impact",
-      "previous_value": 18487.2,
-      "current_value": 19884.5,
+      "previous_value": 19239.6,
+      "current_value": 19568.4,
       "unit": "MW",
-      "change_text": "+7.6%",
+      "change_text": "+1.7%",
       "trend": "up"
     }
   ]

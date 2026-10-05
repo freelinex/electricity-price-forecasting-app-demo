@@ -40,7 +40,7 @@ app = FastAPI(
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=settings.cors_origins or [settings.frontend_url, "http://localhost:3000", "http://localhost:5173"],
+    allow_origins=settings.cors_origins or [settings.frontend_url, "http://localhost:3000", "http://localhost:5173", "https://electricity-price-forecasting-app-d.vercel.app/", "https://electricity-price-forecasting-app-demo-git-main-justdch.vercel.app/"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],

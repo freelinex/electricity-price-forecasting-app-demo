@@ -1,4 +1,5 @@
 import unittest
+import tempfile
 from pathlib import Path
 from unittest.mock import MagicMock, patch
 
@@ -9,6 +10,11 @@ from app.config.settings import settings
 
 
 class TestHistoricalDatasetBuilder(unittest.TestCase):
+
+    def setUp(self):
+        self.temp_dir = tempfile.TemporaryDirectory()
+        self.addCleanup(self.temp_dir.cleanup)
+        self.temp_path = Path(self.temp_dir.name)
 
     def test_merge_energy_data(self):
         index = pd.to_datetime(
@@ -188,9 +194,9 @@ class TestHistoricalDatasetBuilder(unittest.TestCase):
             }
         )
 
-        mock_run.return_value = raw
+        mock_run.return_value = raw.set_index("timestamp")
 
-        missing_path = Path("/tmp/non_existing_raw.csv")
+        missing_path = self.temp_path / "non_existing_raw.csv"
 
         with patch.object(
             settings,
@@ -208,7 +214,7 @@ class TestHistoricalDatasetBuilder(unittest.TestCase):
 
         self.assertEqual(
             update_start,
-            raw["timestamp"].max(),
+            raw["timestamp"].min(),
         )
 
     @patch("app.services.dataset_builder.HistoricalDatasetBuilder.build_raw_data")
@@ -217,7 +223,7 @@ class TestHistoricalDatasetBuilder(unittest.TestCase):
         mock_build_raw_data,
     ):
         with self.subTest("temporary missing value is replaced"):
-            raw_path = Path("/tmp/test_raw_data.csv")
+            raw_path = self.temp_path / "test_raw_data.csv"
 
             raw = pd.DataFrame(
                 {
@@ -297,7 +303,7 @@ class TestHistoricalDatasetBuilder(unittest.TestCase):
         self,
         mock_build_raw_data,
     ):
-        raw_path = Path("/tmp/test_raw_data_complete.csv")
+        raw_path = self.temp_path / "test_raw_data_complete.csv"
 
         raw = pd.DataFrame(
             {
@@ -364,7 +370,7 @@ class TestHistoricalDatasetBuilder(unittest.TestCase):
 
         mock_build_raw_data.return_value = dataset
 
-        raw_path = Path("/tmp/test_run_raw.csv")
+        raw_path = self.temp_path / "test_run_raw.csv"
 
         with patch.object(
             settings,

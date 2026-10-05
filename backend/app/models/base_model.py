@@ -82,8 +82,10 @@ class BaseModel(ABC):
         output_path = Path(path)
         output_path.parent.mkdir(parents=True, exist_ok=True)
 
-        with open(output_path, "wb") as file:
+        temp_path = output_path.with_suffix(".tmp.pkl")
+        with open(temp_path, "wb") as file:
             pickle.dump(self, file)
+        temp_path.replace(output_path)
 
     @classmethod
     def load(cls, path: str | Path) -> "BaseModel":

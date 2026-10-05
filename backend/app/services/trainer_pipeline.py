@@ -30,11 +30,13 @@ class ModelTrainer:
 
         split = int(len(dataset) * 0.8)
         train_data = dataset.iloc[:split]
+        validation_data = dataset.iloc[split:]
 
         model = config.model_class()
         model.fit(train_data)
 
         model.save(config.model_path)
+
 
     @classmethod
     def train_all(cls) -> None:

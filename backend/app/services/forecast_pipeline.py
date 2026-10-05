@@ -1,4 +1,5 @@
 import logging
+from threading import Lock
 from pathlib import Path
 
 import pandas as pd
@@ -19,8 +20,15 @@ logger = logging.getLogger(__name__)
 
 
 class ForecastPipeline:
+    _lock = Lock()
 
     def run(
+            self, periods: int = settings.periods, retrain: bool = False
+    ) -> pd.DataFrame:
+        with self._lock:
+            return self._run(periods, retrain)
+
+    def _run(
         self, periods: int = settings.periods, retrain: bool = False
     ) -> pd.DataFrame:
         builder = HistoricalDatasetBuilder()
@@ -34,7 +42,7 @@ class ForecastPipeline:
         if processed.empty:
             raise ValueError("Processed dataset is empty.")
 
-        if retrain or not self.models_need_retraining():
+        if retrain or not self.models_exist():
             logger.info("Training models...")
             ModelTrainer.train_all()
         else:
@@ -87,7 +95,7 @@ class ForecastPipeline:
         return result
 
     @staticmethod
-    def models_need_retraining() -> bool:
+    def models_exist() -> bool:
         return all(
             Path(path).exists()
             for path in (

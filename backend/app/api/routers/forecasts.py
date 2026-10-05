@@ -1,33 +1,32 @@
+import logging
 from zoneinfo import ZoneInfo
 
 import pandas as pd
 from fastapi import APIRouter, HTTPException
 
-from app.services.forecast_pipeline import ForecastPipeline
+from app.services.forecast_store import forecast_window
 
 router = APIRouter(tags=["Forecast"])
 WARSAW_TZ = ZoneInfo("Europe/Warsaw")
+logger = logging.getLogger(__name__)
 
 
 @router.get("/forecast")
 def get_forecast(period: str = "24h"):
     try:
         if period == "24h":
-            duration = pd.Timedelta(hours=24)
-            periods = 24 * 4
+            days = 1
         elif period == "1w":
-            duration = pd.Timedelta(days=7)
-            periods = 24 * 4 * 7
+            days = 7
         elif period == "1m":
-            duration = pd.Timedelta(days=30)
-            periods = 24 * 4 * 30
+            days = 30
         else:
             raise HTTPException(
                 status_code=400,
                 detail="period must be 24h, 1w or 1m",
             )
 
-        forecast_df = ForecastPipeline().run(periods=periods)
+        forecast_df, updated = forecast_window(days)
 
         if forecast_df.empty:
             raise HTTPException(
@@ -46,18 +45,13 @@ def get_forecast(period: str = "24h"):
             utc=True,
         )
 
-        start = pd.Timestamp.now(WARSAW_TZ).normalize()
-        end = start + duration
-
         forecast_df["timestamp"] = forecast_df["timestamp"].dt.tz_convert(WARSAW_TZ)
-
-        data = forecast_df[
-            (forecast_df["timestamp"] >= start) & (forecast_df["timestamp"] <= end)
-        ]
+        data = forecast_df
 
         return {
             "period": period,
             "timezone": "Europe/Warsaw",
+            "updated_at": updated,
             "forecast": [
                 {
                     "timestamp": row["timestamp"].isoformat(),
@@ -70,8 +64,9 @@ def get_forecast(period: str = "24h"):
     except HTTPException:
         raise
 
-    except Exception as e:
+    except Exception:
+        logger.exception("Forecast response failed")
         raise HTTPException(
             status_code=500,
-            detail=f"Forecast failed: {str(e)}",
+            detail="Forecast is temporarily unavailable.",
         )

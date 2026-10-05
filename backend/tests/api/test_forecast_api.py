@@ -28,11 +28,11 @@ def mock_forecast_df():
     )
 
 
-@patch("app.api.routers.forecasts.ForecastPipeline.run")
+@patch("app.api.routers.forecasts.forecast_window")
 def test_run_forecast_success(mock_run, mock_forecast_df):
     """Test successful forecast generation."""
 
-    mock_run.return_value = mock_forecast_df
+    mock_run.return_value = (mock_forecast_df, "2026-10-05T00:00:00+00:00")
 
     response = client.get("/forecast?period=24h")
 
@@ -41,7 +41,7 @@ def test_run_forecast_success(mock_run, mock_forecast_df):
     data = response.json()
 
     assert data["period"] == "24h"
-    assert data["timezone"] == "UTC"
+    assert data["timezone"] == "Europe/Warsaw"
 
     assert len(data["forecast"]) == 2
 
@@ -49,11 +49,11 @@ def test_run_forecast_success(mock_run, mock_forecast_df):
     assert data["forecast"][1]["price"] == 110.0
 
 
-@patch("app.api.routers.forecasts.ForecastPipeline.run")
+@patch("app.api.routers.forecasts.forecast_window")
 def test_run_forecast_empty_data(mock_run):
     """Test behavior when forecast pipeline returns empty data."""
 
-    mock_run.return_value = pd.DataFrame()
+    mock_run.return_value = (pd.DataFrame(), "2026-10-05T00:00:00+00:00")
 
     response = client.get("/forecast")
 
@@ -61,7 +61,7 @@ def test_run_forecast_empty_data(mock_run):
     assert response.json()["detail"] == "No forecast data generated"
 
 
-@patch("app.api.routers.forecasts.ForecastPipeline.run")
+@patch("app.api.routers.forecasts.forecast_window")
 def test_run_forecast_internal_error(mock_run):
     """Test behavior when forecast pipeline raises an exception."""
 
@@ -71,4 +71,4 @@ def test_run_forecast_internal_error(mock_run):
 
     assert response.status_code == 500
 
-    assert "Forecast failed: Database connection failed" in response.json()["detail"]
+    assert response.json()["detail"] == "Forecast is temporarily unavailable."

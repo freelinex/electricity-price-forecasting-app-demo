@@ -81,7 +81,7 @@ class TestForecastPipeline:
             output_path,
         ), patch.object(
             ForecastPipeline,
-            "models_need_retraining",
+            "models_exist",
             return_value=True,
         ):
 
@@ -216,7 +216,7 @@ class TestForecastPipeline:
         ):
             ForecastPipeline().run()
 
-    def test_models_need_retraining_when_model_missing(self):
+    def test_models_exist_when_model_missing(self):
         with patch(
             "app.services.forecast_pipeline.settings.load_model_pkl",
             Path("/tmp/load.pkl"),
@@ -231,49 +231,14 @@ class TestForecastPipeline:
             Path("/tmp/price.pkl"),
         ):
 
-            result = ForecastPipeline.models_need_retraining()
-
-        assert result is True
-
-    def test_models_need_retraining_when_models_are_recent(
-        self,
-        tmp_path,
-    ):
-        model_paths = [
-            tmp_path / "load.pkl",
-            tmp_path / "wind.pkl",
-            tmp_path / "solar.pkl",
-            tmp_path / "price.pkl",
-        ]
-
-        for path in model_paths:
-            path.touch()
-
-        with patch(
-            "app.services.forecast_pipeline.settings.load_model_pkl",
-            model_paths[0],
-        ), patch(
-            "app.services.forecast_pipeline.settings.wind_model_pkl",
-            model_paths[1],
-        ), patch(
-            "app.services.forecast_pipeline.settings.solar_model_pkl",
-            model_paths[2],
-        ), patch(
-            "app.services.forecast_pipeline.settings.price_model_pkl",
-            model_paths[3],
-        ):
-
-            result = ForecastPipeline.models_need_retraining()
+            result = ForecastPipeline.models_exist()
 
         assert result is False
 
-    def test_models_need_retraining_when_models_are_old(
+    def test_models_exist_when_models_are_recent(
         self,
         tmp_path,
     ):
-        import os
-        import time
-
         model_paths = [
             tmp_path / "load.pkl",
             tmp_path / "wind.pkl",
@@ -281,14 +246,8 @@ class TestForecastPipeline:
             tmp_path / "price.pkl",
         ]
 
-        old_time = time.time() - 8 * 24 * 60 * 60
-
         for path in model_paths:
             path.touch()
-            os.utime(
-                path,
-                (old_time, old_time),
-            )
 
         with patch(
             "app.services.forecast_pipeline.settings.load_model_pkl",
@@ -304,6 +263,7 @@ class TestForecastPipeline:
             model_paths[3],
         ):
 
-            result = ForecastPipeline.models_need_retraining()
+            result = ForecastPipeline.models_exist()
 
         assert result is True
+

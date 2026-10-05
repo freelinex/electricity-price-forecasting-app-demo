@@ -103,7 +103,10 @@ class HistoricalDatasetBuilder:
 
         if not raw_path.exists():
             raw = self.run()
-            return raw, raw["timestamp"].max()
+            if raw.empty:
+                raise ValueError("ENTSO-E returned no historical data.")
+            raw = raw.rename_axis("timestamp").reset_index()
+            return raw, raw["timestamp"].min()
 
         raw = pd.read_csv(raw_path)
 
@@ -115,6 +118,9 @@ class HistoricalDatasetBuilder:
 
         raw = raw.dropna(subset=["timestamp"])
         raw = raw.sort_values("timestamp")
+
+        if raw.empty:
+            raise ValueError("Raw dataset contains no valid timestamps.")
 
         value_columns = ["load", "wind", "solar"]
 
@@ -175,14 +181,19 @@ class HistoricalDatasetBuilder:
             end_date=str(today),
         )
 
+        if dataset.empty:
+            raise ValueError("ENTSO-E returned no historical data.")
+
         output = settings.raw_file
         output.parent.mkdir(parents=True, exist_ok=True)
 
+        temp_output = output.with_suffix(".tmp.csv")
         dataset.to_csv(
-            output,
+            temp_output,
             index=True,
             index_label="timestamp",
         )
+        temp_output.replace(output)
         return dataset
 
 

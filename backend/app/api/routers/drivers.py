@@ -1,7 +1,9 @@
+import logging
+
 import pandas as pd
 from fastapi import APIRouter, HTTPException
 from app.config.settings import settings
-from app.services.forecast_pipeline import ForecastPipeline
+from app.services.forecast_store import forecast_window
 from app.api.schemas.dashboard import (
     TodayHighlightsResponse,
     HighlightMetric,
@@ -10,6 +12,7 @@ from app.api.schemas.dashboard import (
 )
 
 router = APIRouter(prefix="/api/dashboard", tags=["Dashboard"])
+logger = logging.getLogger(__name__)
 
 
 def calculate_trend(
@@ -34,8 +37,7 @@ def calculate_trend(
 def fetch_dashboard_data():
     """Retrieves and aligns real historical actuals with today's forecast."""
     try:
-        pipeline = ForecastPipeline()
-        forecast_df = pipeline.run()
+        forecast_df, _ = forecast_window(1)
 
         if "timestamp" in forecast_df.columns:
             forecast_df["timestamp"] = pd.to_datetime(
@@ -47,16 +49,17 @@ def fetch_dashboard_data():
 
         raw_df = pd.read_csv(settings.raw_file)
         raw_df["timestamp"] = pd.to_datetime(raw_df["timestamp"], utc=True)
+        raw_df = raw_df.dropna(subset=["timestamp", "price", "load", "wind", "solar"])
         raw_df.set_index("timestamp", inplace=True)
 
         raw_df = raw_df.tz_convert(settings.timezone)
         forecast_df = forecast_df.tz_convert(settings.timezone)
         now = pd.Timestamp.now(tz=settings.timezone)
 
-        yesterday_start = now.normalize() - pd.Timedelta(days=1)
+        yesterday_start = now.normalize() - pd.DateOffset(days=1)
         yesterday_end = now.normalize() - pd.Timedelta(seconds=1)
         today_start = now.normalize()
-        today_end = now.normalize() + pd.Timedelta(days=1) - pd.Timedelta(seconds=1)
+        today_end = now.normalize() + pd.DateOffset(days=1) - pd.Timedelta(seconds=1)
 
         yesterday_data = raw_df.loc[yesterday_start:yesterday_end]
         today_data = forecast_df.loc[today_start:today_end]
@@ -66,12 +69,12 @@ def fetch_dashboard_data():
 
         return yesterday_data, today_data, now
 
-    except Exception as e:
-        import traceback
-
-        traceback.print_exc()
+    except HTTPException:
+        raise
+    except Exception:
+        logger.exception("Dashboard data unavailable")
         raise HTTPException(
-            status_code=500, detail=f"Failed to process dashboard data: {str(e)}"
+            status_code=503, detail="Dashboard data is temporarily unavailable."
         )
 
 
@@ -89,7 +92,8 @@ def get_today_highlights():
     yesterday_low = yesterday_prices.min()
     today_low = today_prices.min()
 
-    current_hour = now.floor("h")
+    # Floor in UTC to distinguish the repeated hour when DST ends.
+    current_hour = now.tz_convert("UTC").floor("h").tz_convert(settings.timezone)
     try:
         current_price = float(today_prices.loc[current_hour])
     except KeyError:

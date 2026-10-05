@@ -142,7 +142,7 @@ class ForecastService:
         result["timestamp"] = pd.to_datetime(
             result["timestamp"], utc=True
         ).dt.tz_convert("Europe/Warsaw")
-        result = result[["timestamp", "price"]]
+        result = result[["timestamp", "price", "load", "wind", "solar"]]
 
         logger.info(
             "Final forecast result: %s points",
@@ -155,9 +155,9 @@ class ForecastService:
         self,
         periods: int,
     ) -> pd.DataFrame:
-        """Expensive recursive forecast calculation."""
 
-        history = self.load_processed_data().copy()
+        # Models only need the largest lag (one week), not two years of history.
+        history = self.load_processed_data().tail(672).reset_index(drop=True).copy()
 
         predictions = []
 

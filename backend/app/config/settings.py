@@ -9,6 +9,7 @@ class Settings(BaseSettings):
 
     entsoe_api_key: str = Field(min_length=1, validation_alias="ENTSOE_API_KEY")
     country: str = Field(default="PL", validation_alias="COUNTRY")
+
     frontend_url: str = Field(default="http://localhost:3000", validation_alias="FRONTEND_URL")
 
     PROJECT_NAME: str = "Electricity Price Forecasting"
@@ -37,6 +38,7 @@ class Settings(BaseSettings):
     forecast_refresh_seconds: int = Field(default=3600, ge=60, validation_alias="FORECAST_REFRESH_SECONDS")
     forecast_max_age_seconds: int = Field(default=86400, ge=60, validation_alias="FORECAST_MAX_AGE_SECONDS")
     entsoe_timeout: int = Field(default=30, ge=1, validation_alias="ENTSOE_TIMEOUT")
+    history_days: int = Field(default=730, ge=14, validation_alias="HISTORY_DAYS")
 
     @model_validator(mode="before")
     @classmethod

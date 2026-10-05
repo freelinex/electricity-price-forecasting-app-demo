@@ -3,8 +3,6 @@ import logging
 from threading import Event, Thread
 
 from fastapi import FastAPI
-from fastapi import FastAPI, Request
-from fastapi.templating import Jinja2Templates
 from fastapi.middleware.cors import CORSMiddleware
 
 from app.api.routers import forecasts, drivers
@@ -42,18 +40,7 @@ app = FastAPI(
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=settings.cors_origins,
-    allow_methods=["GET"],
-    allow_headers=["*"],
-)
-
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=[
-        settings.frontend_url,
-        "http://localhost:3000",
-        "http://localhost:5173"
-    ],
+    allow_origins=settings.cors_origins or [settings.frontend_url, "http://localhost:3000", "http://localhost:5173"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -77,6 +64,3 @@ def health():
 def ready():
     _, updated = forecast_window(1)
     return {"status": "ready", "updated_at": updated}
-def home(request: Request):
-    return {"status": "ok", "message": "Voltio Energy Forecast API is running"}
-

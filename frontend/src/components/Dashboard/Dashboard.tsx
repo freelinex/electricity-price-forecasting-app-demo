@@ -102,7 +102,7 @@ export const Dashboard = () => {
         }
       })
       .finally(() => {
-        setTimeout(() => setIsLoading(false), 3000);
+        setIsLoading(false);
       });
   }, [updatedAt]);
 

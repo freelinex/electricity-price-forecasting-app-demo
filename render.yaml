@@ -2,20 +2,18 @@ services:
   - type: web
     name: voltio-backend
     runtime: python
-    plan: 1c-2g
+    plan: free
     rootDir: backend
     buildCommand: pip install poetry==2.4.3 && poetry install --only main --no-interaction
     startCommand: poetry run uvicorn main:app --host 0.0.0.0 --port $PORT --workers 1
     healthCheckPath: /health
-    disk:
-      name: voltio-data
-      mountPath: /var/data
-      sizeGB: 5
     envVars:
       - key: PYTHON_VERSION
         value: 3.14.7
       - key: DATA_DIR
-        value: /var/data
+        value: /tmp/voltio-data
+      - key: HISTORY_DAYS
+        value: "90"
       - key: FORECAST_REFRESH_ENABLED
         value: "true"
       - key: FORECAST_REFRESH_SECONDS

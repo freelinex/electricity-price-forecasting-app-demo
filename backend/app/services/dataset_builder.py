@@ -177,7 +177,7 @@ class HistoricalDatasetBuilder:
         today = pd.Timestamp.now(tz="UTC")
 
         dataset = self.build_raw_data(
-            start_date=str(today - pd.DateOffset(years=2)),
+            start_date=str(today - pd.Timedelta(days=settings.history_days)),
             end_date=str(today),
         )
 

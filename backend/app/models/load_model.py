@@ -14,6 +14,7 @@ class LoadModel(BaseModel):
     def __init__(self) -> None:
         super().__init__(
             LGBMRegressor(
+                n_jobs=1,
                 random_state=42,
                 n_estimators=300,
                 learning_rate=0.05,

@@ -1,8 +1,8 @@
 import { Route, Routes } from "react-router-dom";
 import "./App.scss";
-import { Homepage } from "./components/Homepage";
 import { PageNotFound } from "./components/PageNotFound";
 import { Dashboard } from "./components/Dashboard";
+import { Homepage } from "./components/Homepage";
 
 export const App = () => {
   return (

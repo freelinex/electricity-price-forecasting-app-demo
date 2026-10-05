@@ -1,10 +1,10 @@
 import type { DriversData, ForecastData, HighlightsData } from "../types/types";
 
-const BASE_URL = "/api";
+const BASE_URL = "https://electricity-price-forecasting-app-demo.onrender.com";
 
-const DRIVERS = "/drivers.json";
-const HIGHLIGHTS = "/highlights.json";
-const FORECAST = "/forecast.json";
+const DRIVERS = "/api/dashboard/drivers";
+const HIGHLIGHTS = "/api/dashboard/highlights";
+const FORECAST = "/forecast";
 
 export type ForecastPeriod = "24h" | "1w" | "1m";
 

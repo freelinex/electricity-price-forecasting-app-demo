@@ -228,7 +228,7 @@ __marimo__/
 # Streamlit
 .streamlit/secrets.toml
 
-backend/.env
+backend/app/.env
 .venv/
 .idea/
 __pycache__/

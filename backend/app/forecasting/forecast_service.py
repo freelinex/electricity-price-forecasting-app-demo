@@ -156,7 +156,8 @@ class ForecastService:
         periods: int,
     ) -> pd.DataFrame:
 
-        history = self.load_processed_data().copy()
+        # Models only need the largest lag (one week), not two years of history.
+        history = self.load_processed_data().tail(672).reset_index(drop=True).copy()
 
         predictions = []
 

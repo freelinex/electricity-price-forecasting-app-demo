@@ -8,7 +8,10 @@ import pandas as pd
 class EntsoeLoader:
 
     def __init__(self, country=settings.country) -> None:
-        self.client = EntsoePandasClient(api_key=settings.entsoe_api_key)
+        self.client = EntsoePandasClient(
+            api_key=settings.entsoe_api_key, timeout=settings.entsoe_timeout,
+            retry_count=3, retry_delay=10,
+        )
         self.country = country
 
     def build_dataset(self, start: pd.Timestamp, end: pd.Timestamp) -> pd.DataFrame:

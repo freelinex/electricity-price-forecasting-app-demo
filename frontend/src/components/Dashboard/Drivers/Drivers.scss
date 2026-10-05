@@ -1,0 +1,139 @@
+@use "../../../utils/variables" as *;
+
+.drivers {
+  display: flex;
+  flex-direction: column;
+  border: 1px solid $mainBorderColor;
+  border-radius: $borderRadius;
+  grid-area: drivers;
+
+  padding: 24px;
+
+  &__textBox {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 16px;
+
+    &__titleBox {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+
+      &__title {
+        margin: 0;
+        font-size: 24px;
+        font-weight: 400;
+        line-height: 140%;
+        color: $titleColor;
+      }
+
+      &__text {
+        font-size: 16px;
+        font-weight: 400;
+        line-height: 140%;
+        color: $chartsBorderColor;
+      }
+    }
+
+    &__button {
+      display: flex;
+      align-items: center;
+      border: none;
+      background: none;
+
+      height: 32px;
+      gap: 8px;
+
+      color: $detailButtonColor;
+      font-size: 14px;
+      font-weight: 500;
+      line-height: 150%;
+
+      cursor: pointer;
+
+      &__arrow {
+        height: 24px;
+        width: 24px;
+      }
+    }
+  }
+
+  &__infoPanel {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 12px;
+    margin-bottom: 8px;
+
+    height: 62px;
+
+    border: 1px solid $mainBorderColor;
+    border-radius: $borderRadius;
+
+    &__textContainer {
+      display: flex;
+      gap: 16px;
+
+      &__textBox {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+
+        &__mainText {
+          font-size: 14px;
+          font-weight: 500;
+          line-height: 150%;
+          color: $titleColor;
+        }
+
+        &__secondaryText {
+          font-size: 14px;
+          font-weight: 400;
+          line-height: 150%;
+          color: $chartsBorderColor;
+        }
+      }
+    }
+
+    &__infoBox {
+      display: flex;
+
+      &__unitsBox {
+        display: flex;
+        align-items: center;
+        gap: 2px;
+
+        &__text {
+          font-size: 12px;
+          font-weight: 400;
+          line-height: 140%;
+          color: $chartsBorderColor;
+        }
+
+        &__arrow {
+          height: 16px;
+          width: 16px;
+        }
+      }
+
+      &__changeText {
+        margin-left: 16px;
+
+        font-size: 14px;
+        font-weight: 500;
+      }
+
+      &__rate {
+        margin-left: 16px;
+      }
+    }
+  }
+}
+
+.red {
+  color: $rateDownTextColor;
+}
+
+.green {
+  color: $rateUpTextColor;
+}

@@ -1,0 +1,294 @@
+@use "../../../utils/variables" as *;
+
+.price-forecast {
+  width: 100%;
+  padding: 24px;
+  border: 0.3px solid $mainBorderColor;
+  border-radius: $borderRadius;
+  background-color: $mainBackgroundColor;
+  box-sizing: border-box;
+  grid-area: forecast;
+
+  &__header {
+    display: flex;
+    justify-content: space-between;
+  }
+
+  &__title {
+    font-size: 24px;
+    font-weight: 400;
+    color: $titleColor;
+  }
+
+  &__controls {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+
+  &__periods {
+    position: relative;
+    isolation: isolate;
+    display: grid;
+    grid-template-columns: repeat(3, minmax(54px, 1fr));
+    padding: 2px;
+    border: 1px solid $mainBorderColor;
+    border-radius: $borderRadius;
+    background-color: $secondaryBackgroundColor;
+    box-shadow: 0 1px 1px #EBEBEB(0 0 0 / 10%);
+
+    &::before {
+      content: "";
+      position: absolute;
+      top: 2px;
+      bottom: 2px;
+      left: 2px;
+      width: calc((100% - 4px) / 3);
+      border-radius: $borderRadius;
+      background-color: $mainBackgroundColor;
+      box-shadow: 0 1px 4px rgb(0 0 0 / 8%);
+      pointer-events: none;
+      transform: translateX(0);
+      transition: transform 0.3s ease;
+    }
+
+    &[data-active-index="1"]::before {
+      transform: translateX(100%);
+    }
+
+    &[data-active-index="2"]::before {
+      transform: translateX(200%);
+    }
+  }
+
+  &__period-button {
+    position: relative;
+    z-index: 1;
+    min-width: 54px;
+    height: 32px;
+    padding: 0 14px;
+    border: none;
+    border-radius: $borderRadius;
+    background-color: transparent;
+    color: $subtitleColor;
+    font: inherit;
+    font-size: 12px;
+    font-weight: 500;
+    cursor: pointer;
+
+    transition:
+      background-color 0.3s ease,
+      color 0.3s ease;
+
+    &:focus-visible {
+      outline: 2px solid $activeTextColor;
+      outline-offset: 2px;
+    }
+
+    &:not(.price-forecast__period-button--active):hover {
+      color: $titleColor;
+      background-color: $periodSelectorHover;
+    }
+
+    &--active {
+      color: $titleColor;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    &__periods::before,
+    &__period-button {
+      transition: none;
+    }
+  }
+
+  &__interval {
+    width: 98px;
+    height: 34px;
+    padding: 0 12px;
+    border: 1px solid $mainBorderColor;
+    border-radius: $borderRadius;
+    background-color: $mainBackgroundColor;
+    color: $titleColor;
+    font: inherit;
+    font-size: 12px;
+    font-weight: 500;
+    cursor: pointer;
+
+    &:focus-visible {
+      outline: 2px solid $activeTextColor;
+      outline-offset: 3px;
+    }
+
+    @supports (appearance: base-select) {
+      appearance: base-select;
+      align-items: center;
+      gap: 8px;
+      border-radius: $borderRadius;
+      background-color: $secondaryBackgroundColor;
+
+      &::picker(select) {
+        appearance: base-select;
+        margin: -1px 0 0;
+        padding: 0;
+        border: 1px solid $mainBorderColor;
+        border-top: 0;
+        border-radius: 0 0 $borderRadius $borderRadius;
+        background-color: $secondaryBackgroundColor;
+        color: $titleColor;
+        box-shadow: none;
+        font: inherit;
+
+        opacity: 0;
+        transform: translateY(-6px);
+
+        transition:
+          opacity 0.3s ease,
+          transform 0.3s ease,
+          display 0.3s allow-discrete,
+          overlay 0.3s allow-discrete;
+      }
+
+      &:open::picker(select) {
+        opacity: 1;
+        transform: translateY(0);
+      }
+
+      @starting-style {
+        &:open::picker(select) {
+          opacity: 0;
+          transform: translateY(-6px);
+        }
+      }
+
+      &:open {
+        border-bottom-color: transparent;
+        border-radius: $borderRadius $borderRadius 0 0;
+      }
+
+      &::picker-icon {
+        content: "";
+        width: 16px;
+        height: 16px;
+        background: url("../../../assets/arrow-down-active.svg") center /
+          contain no-repeat;
+
+        transition: 0.3s ease;
+      }
+
+      &:open::picker-icon {
+        rotate: 180deg;
+      }
+
+      option {
+        min-height: 34px;
+        padding: 0 12px;
+        border: 0;
+        background-color: $secondaryBackgroundColor;
+        font: inherit;
+        cursor: pointer;
+
+        &:hover,
+        &:focus-visible {
+          background-color: $mainBorderColor;
+        }
+
+        &::checkmark {
+          display: none;
+        }
+
+        &:checked {
+          display: none;
+        }
+      }
+    }
+  }
+
+  &__unit {
+    margin-top: 24px;
+    color: $chartsBorderColor;
+    font-size: 12px;
+  }
+
+  &__chart {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    width: 100%;
+    height: 340px;
+    margin-top: 16px;
+
+    svg *:focus {
+      outline: none;
+    }
+  }
+
+  &__footer {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 24px;
+    padding-top: 16px;
+    border-top: 1px solid $mainBorderColor;
+
+    color: $chartsBorderColor;
+    font-size: 10px;
+  }
+}
+
+.price-chart {
+  &__tooltip {
+    min-width: 213px;
+    padding: 8px 12px;
+    border-radius: $borderRadius;
+    background-color: rgba(255, 255, 255, 66%);
+
+    &-date {
+      margin-bottom: 8px;
+      color: $chartsBorderColor;
+      font-size: 12px;
+    }
+
+    &__container {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+
+      &__price {
+        color: $titleColor;
+        font-size: 16px;
+        font-weight: 500;
+      }
+
+      &__unit {
+        color: $chartsBorderColor;
+        font-size: 12px;
+      }
+    }
+  }
+}
+
+.errorBox {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+
+  &__button {
+    border: 1px solid $mainBorderColor;
+    border-radius: $borderRadius;
+
+    background-color: $secondaryBackgroundColor;
+
+    width: 216px;
+    height: 42px;
+
+    font-size: 14px;
+    font-weight: 500;
+
+    transition: 0.3s ease;
+
+    cursor: pointer;
+  }
+}

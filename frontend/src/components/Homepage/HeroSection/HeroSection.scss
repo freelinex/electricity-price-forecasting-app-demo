@@ -1,0 +1,118 @@
+@use "../../../utils/variables" as *;
+
+.hero-section {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+
+  height: 1021px;
+
+  padding-top: 285px;
+
+  background-image: url("../../../assets/landing/header-background.jpg");
+  background-size: cover;
+  background-position: 0 40%;
+
+  &__top {
+    display: flex;
+    justify-content: space-between;
+
+    padding: 0 213px;
+
+    &__title-box {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: 24px;
+
+      color: $landingTitleTextColor;
+
+      height: fit-content;
+      width: 622px;
+
+      &__title {
+        font-size: 80px;
+        font-weight: 400;
+        line-height: 96%;
+        letter-spacing: -3%;
+      }
+
+      &__subtitle {
+        font-size: 24px;
+        font-weight: 400;
+        line-height: 140%;
+        letter-spacing: -3%;
+      }
+
+      &__anchor {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        border-radius: $borderRadius;
+        background-color: $periodSelectorHover;
+        color: $landingButtonTextColorSecondary;
+        text-decoration: none;
+
+        font-size: 14px;
+        font-weight: 500;
+        line-height: 150%;
+        height: 42px;
+        width: 158px;
+      }
+    }
+
+    &__nav-box {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: flex-end;
+
+      gap: 8px;
+
+      height: 389px;
+
+      &__item {
+        height: 41px;
+
+        color: $landingTitleTextColor;
+
+        font-size: 16px;
+        font-weight: 400;
+        line-height: 140%;
+
+        text-decoration: none;
+      }
+    }
+  }
+
+  &__bottom {
+    display: flex;
+    justify-content: center;
+
+    width: 100%;
+
+    &__explore-box {
+      width: 100%;
+      margin-bottom: 8px;
+
+      &__anchor {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 12px;
+
+        color: $landingTitleTextColor;
+        font-size: 16px;
+        font-weight: 500;
+        line-height: 140%;
+        cursor: default;
+
+        &__arrow {
+          width: 20px;
+          height: 20px;
+        }
+      }
+    }
+  }
+}

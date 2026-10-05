@@ -9,6 +9,7 @@ class Settings(BaseSettings):
 
     entsoe_api_key: str = Field(min_length=1, validation_alias="ENTSOE_API_KEY")
     country: str = Field(default="PL", validation_alias="COUNTRY")
+    frontend_url: str = Field(default="http://localhost:3000", validation_alias="FRONTEND_URL")
 
     PROJECT_NAME: str = "Electricity Price Forecasting"
     BASE_DIR: ClassVar[Path] = Path(__file__).resolve().parents[1]

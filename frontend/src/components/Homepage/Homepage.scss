@@ -1,0 +1,41 @@
+@use "../../utils/variables" as *;
+
+.homepage {
+  &__main {
+    &__logo-box {
+      display: flex;
+      align-items: center;
+      flex-direction: column;
+      gap: 16px;
+
+      border-bottom: 1px solid $mainBorderColor;
+
+      padding: 100px 213px;
+
+      &__title {
+        font-size: 24px;
+        font-weight: 400;
+        letter-spacing: -3%;
+        line-height: 140%;
+
+        color: $titleColor;
+      }
+
+      &__logo-container {
+        height: 347px;
+        width: 100%;
+
+        background-image: url("../../assets/landing/logo.png");
+        background-size: contain;
+        background-repeat: no-repeat;
+        background-position: center;
+
+        transition: 0.3s ease;
+
+        &:hover {
+          background-image: url("../../assets/landing/logo-hovered.png");
+        }
+      }
+    }
+  }
+}
